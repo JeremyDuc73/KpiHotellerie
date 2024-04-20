@@ -1,7 +1,13 @@
-<script setup>
+<script>
 import BarChart from "./components/BarChart.vue";
 import DoughnutChart from "./components/DoughnutChart.vue";
 import LineChart from "./components/LineChart.vue";
+
+
+export default {
+  name: 'App',
+  components: { LineChart }
+}
 </script>
 
 <template>

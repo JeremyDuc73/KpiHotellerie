@@ -1,54 +1,36 @@
-<script setup>
+<script>
 import Chart from 'chart.js/auto';
-import {onMounted, reactive, watchEffect} from "vue";
+import {Line} from "vue-chartjs";
 
-let months = []
-let bookings = []
+export default {
+  name: "LineChart",
+  components: {Line},
+  data: () => ({
+    loaded: false,
+    chartData: null
+  }),
+  async mounted() {
+    this.loaded = false
 
-console.log(bookings)
-console.log(months)
+    try {
+      const {monthList} = await fetch("months.json")
+      console.log(monthList)
+      this.chartData.labels = monthList
 
-const data = {
-  labels: months,
-  datasets : [{
-    label: 'Bookings by month',
-    backgroundColor: 'rgb(255,255,255)',
-    borderColor: 'rgb(206,53,53)',
-    data: bookings
-  }]
+      this.loaded = true
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 
-const config = {
-  type: 'line',
-  data: data,
-  options: {
-    animations: {}
-  }
-};
 
-
-onMounted(()=> {
-   const lineChart = new Chart(
-      document.getElementById('lineChart'),
-      config
-  );
-
-  fetch("data.json")
-      .then((response)=> {
-        return response.json()
-      })
-      .then((data)=> {
-        data.forEach((element)=> {
-          months.push(element.months)
-          bookings.push(element.bookings)
-        })
-      })
-  //GRAPHIQUE A AFFICHER AVEC LES VALEURS
-})
 </script>
 
 <template>
-  <canvas width="400" id="lineChart"></canvas>
+  <div class="container">
+    <Line v-if="loaded" :data="chartData" />
+  </div>
 </template>
 
 <style scoped>
